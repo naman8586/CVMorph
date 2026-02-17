@@ -1,0 +1,73 @@
+// CVMorph Prisma Schema
+// Complete database schema for AI-powered resume builder
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - Authentication and user management
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  resumeBase     ResumeBase?      @relation("UserResumeBase")
+  resumeVersions ResumeVersion[]  @relation("UserResumeVersions")
+
+  @@map("users")
+}
+
+// ResumeBase model - User's single source of truth
+model ResumeBase {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  
+  // JSONB fields for flexible data structure
+  personalInfo Json   @default("{}") @map("personal_info") @db.JsonB
+  education    Json   @default("[]") @db.JsonB
+  experience   Json   @default("[]") @db.JsonB
+  projects     Json   @default("[]") @db.JsonB
+  skills       Json   @default("{}") @db.JsonB
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user           User            @relation("UserResumeBase", fields: [userId], references: [id], onDelete: Cascade)
+  resumeVersions ResumeVersion[] @relation("ResumeBaseVersions")
+
+  @@index([userId])
+  @@map("resume_base")
+}
+
+// ResumeVersion model - AI-adapted role-specific resumes
+model ResumeVersion {
+  id             Int      @id @default(autoincrement())
+  resumeBaseId   Int      @map("resume_base_id")
+  userId         Int      @map("user_id")
+  role           String   @db.VarChar(100)
+  jobDescription String?  @map("job_description") @db.Text
+  
+  // AI-adapted content stored as JSONB
+  adaptedContent Json     @map("adapted_content") @db.JsonB
+  
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  // Relations
+  resumeBase ResumeBase @relation("ResumeBaseVersions", fields: [resumeBaseId], references: [id], onDelete: Cascade)
+  user       User       @relation("UserResumeVersions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([resumeBaseId])
+  @@index([role])
+  @@map("resume_versions")
+}

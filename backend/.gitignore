@@ -1,0 +1,149 @@
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+*.env
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnp
+.pnp.js
+
+.next/
+out/
+build/
+.next/static/
+
+dist/
+build/
+
+# ========================
+# Database
+# ========================
+# Prisma migrations (keep schema, ignore generated)
+# Comment this out if you want to commit migrations
+# prisma/migrations/
+
+# Database dumps
+*.sql
+*.dump
+*.sqlite
+*.db
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================
+# IDE & Editors
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
+
+# ========================
+# Testing
+# ========================
+coverage/
+*.lcov
+.nyc_output/
+jest.config.js.bak
+
+# ========================
+# Temporary Files
+# ========================
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# ========================
+# PDF Output Files
+# (generated at runtime)
+# ========================
+generated_pdfs/
+output_pdfs/
+*.pdf
+
+# ========================
+# Puppeteer
+# ========================
+.local-chromium/
+
+# ========================
+# Package Managers
+# ========================
+# Keep package-lock.json and yarn.lock
+# but ignore others
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+package-lock.json.bak
+
+# ========================
+# TypeScript
+# ========================
+*.tsbuildinfo
+next-env.d.ts
+
+# ========================
+# Prisma
+# ========================
+# Keep schema.prisma and migrations/
+# Ignore generated client (reinstalled via npm install)
+node_modules/.prisma/
+
+# ========================
+# Miscellaneous
+# ========================
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.pid
+*.seed
+*.pid.lock
+.grunt
+bower_components/
+.lock-wscript
+jspm_packages/
+web_modules/
