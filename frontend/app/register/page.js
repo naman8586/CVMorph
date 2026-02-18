@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Sparkles, ArrowLeft, ShieldCheck, UserPlus } from "lucide-react";
 import { authAPI } from "@/lib/api";
 import { setToken, setUser, isAuthenticated } from "@/lib/auth";
-import { Button } from "../components/ui/Button"; // Using your custom Button component
+import { Button } from "../components/ui/Button";
 
 export default function Register() {
   const router = useRouter();
@@ -62,7 +62,10 @@ export default function Register() {
         router.push("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -76,45 +79,42 @@ export default function Register() {
       </div>
 
       <div className="max-w-xl w-full relative z-10">
-        {/* Brand Identity */}
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center gap-4 group">
-          <div className="relative">
-            {/* Animated Background Glow - Now with a "Pulse" effect on hover */}
-            <div className="absolute -inset-1.5 bg-gradient-to-tr from-orange-600 via-orange-400 to-amber-300 rounded-xl blur-md opacity-20 group-hover:opacity-60 group-hover:blur-lg transition-all duration-500 animate-pulse" />
-
-            {/* Logo Icon Box */}
-            <div className="relative w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center shadow-2xl group-hover:rotate-[-4deg] group-hover:scale-110 transition-all duration-300 border border-white/10">
-              <div className="flex flex-col items-center leading-none">
-                <span className="text-orange-400 font-black text-[12px] tracking-tighter">
-                  CV
-                </span>
+            <div className="relative">
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-orange-600 via-orange-400 to-amber-300 rounded-xl blur-md opacity-20 group-hover:opacity-60 group-hover:blur-lg transition-all duration-500 animate-pulse" />
+              <div className="relative w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center shadow-2xl group-hover:rotate-[-4deg] group-hover:scale-110 transition-all duration-300 border border-white/10">
+                <div className="flex flex-col items-center leading-none">
+                  <span className="text-orange-400 font-black text-[12px] tracking-tighter">
+                    CV
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex flex-col">
-            <div className="relative">
-              <span className="text-2xl font-black tracking-tighter text-slate-900 leading-none">
-                Morph
+            <div className="flex flex-col">
+              <div className="relative">
+                <span className="text-2xl font-black tracking-tighter text-slate-900 leading-none">
+                  Morph
+                </span>
+                <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-orange-500 group-hover:w-full transition-all duration-300 ease-out rounded-full" />
+              </div>
+
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 group-hover:text-slate-600 transition-colors">
+                Neural Architect
               </span>
-              {/* Animated underline that expands on hover */}
-              <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-orange-500 group-hover:w-full transition-all duration-300 ease-out rounded-full" />
             </div>
-
-            {/* Brand Tagline: Adds professional "SaaS" polish */}
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 group-hover:text-slate-600 transition-colors">
-              Neural Architect
-            </span>
-          </div>
-        </Link>
+          </Link>
         </div>
 
-        {/* Card */}
         <div className="bg-white/80 backdrop-blur-xl border border-slate-200 p-8 md:p-12 rounded-[40px] shadow-2xl shadow-slate-200/50">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create your account</h2>
-            <p className="text-slate-500 text-sm mt-1">Join 100k+ professionals and start morphing today.</p>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Create your account
+            </h2>
+            <p className="text-slate-500 text-sm mt-1">
+              Lets start morphing today.
+            </p>
           </div>
 
           {error && (
@@ -126,7 +126,9 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Full Name</label>
+              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                Full Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -139,7 +141,9 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Email Identifier</label>
+              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                Email Identifier
+              </label>
               <input
                 type="email"
                 name="email"
@@ -153,7 +157,9 @@ export default function Register() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Password</label>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                  Password
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -164,8 +170,11 @@ export default function Register() {
                   required
                 />
               </div>
+
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Confirm</label>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                  Confirm
+                </label>
                 <input
                   type="password"
                   name="confirmPassword"
@@ -187,31 +196,28 @@ export default function Register() {
 
           <div className="mt-8 text-center border-t border-slate-100 pt-8">
             <p className="text-slate-500 text-sm font-medium">
-              Already a member?{' '}
-              <Link href="/login" className="text-orange-600 font-bold hover:underline transition-colors">
+              Already a member?{" "}
+              <Link
+                href="/login"
+                className="text-orange-600 font-bold hover:underline transition-colors"
+              >
                 Sign in to account
               </Link>
             </p>
           </div>
         </div>
 
-        {/* Trust Footer */}
         <div className="mt-8 flex flex-col items-center gap-4">
-           <div className="flex items-center gap-6 text-slate-400">
-                <div className="flex items-center gap-1.5">
-                    <ShieldCheck size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">GDPR Compliant</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <UserPlus size={14} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Instant Access</span>
-                </div>
-            </div>
-            
-            <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 text-[11px] font-bold uppercase tracking-widest transition-colors group">
-                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                Back to Home
-            </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 text-[11px] font-bold uppercase tracking-widest transition-colors group"
+          >
+            <ArrowLeft
+              size={14}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Back to Home
+          </Link>
         </div>
       </div>
     </div>

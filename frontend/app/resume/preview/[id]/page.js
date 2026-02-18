@@ -77,12 +77,10 @@ export default function PreviewResume() {
 
       <main className="max-w-6xl mx-auto px-6 py-10 grid lg:grid-cols-[1fr_280px] gap-8 items-start">
 
-        {/* ── Resume Sheet — matches PDF output exactly ─────────────── */}
         <div className="bg-white shadow-xl rounded-sm ring-1 ring-slate-200/80"
           style={{ fontFamily: '"Georgia", "Times New Roman", serif' }}>
           <div style={{ padding: '1cm 1.2cm', minHeight: '27.9cm' }}>
 
-            {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '8pt' }}>
               <h1 style={{ fontSize: '24pt', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5pt', lineHeight: 1, marginBottom: '4pt' }}>
                 {c.personal_info?.name || ''}
@@ -97,7 +95,6 @@ export default function PreviewResume() {
               </div>
             </div>
 
-            {/* Summary */}
             {c.personal_info?.summary && (
               <>
                 <SectionHeading>Summary</SectionHeading>
@@ -107,7 +104,6 @@ export default function PreviewResume() {
               </>
             )}
 
-            {/* Skills */}
             {(skills.languages?.length || skills.frontend?.length || skills.backend?.length || skills.databases?.length || skills.tools?.length) ? (
               <>
                 <SectionHeading>Skills</SectionHeading>
@@ -130,7 +126,6 @@ export default function PreviewResume() {
               </>
             ) : null}
 
-            {/* Experience */}
             {c.experience?.length ? (
               <>
                 <SectionHeading>Professional Experience</SectionHeading>
@@ -146,7 +141,6 @@ export default function PreviewResume() {
               </>
             ) : null}
 
-            {/* Projects */}
             {c.projects?.length ? (
               <>
                 <SectionHeading>Projects</SectionHeading>
@@ -168,7 +162,6 @@ export default function PreviewResume() {
               </>
             ) : null}
 
-            {/* Education */}
             {c.education?.length ? (
               <>
                 <SectionHeading>Education</SectionHeading>
@@ -188,8 +181,6 @@ export default function PreviewResume() {
 
           </div>
         </div>
-
-        {/* ── Sidebar ────────────────────────────────────────────────── */}
         <aside className="space-y-5 lg:sticky lg:top-24">
           <div className="bg-white border border-slate-200 rounded-[28px] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-5 text-orange-500">
@@ -235,8 +226,6 @@ export default function PreviewResume() {
     </div>
   );
 }
-
-// ── Inline sub-components (inline styles to match PDF exactly) ───────────────
 
 function SectionHeading({ children }) {
   return (

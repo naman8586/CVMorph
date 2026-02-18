@@ -10,13 +10,11 @@ import {
 import { resumeAPI } from '@/lib/api';
 import { isAuthenticated, logout } from '@/lib/auth';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const YEARS  = Array.from({ length: 15 }, (_, i) => 2015 + i);
 const labelCls = "block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1";
 const inputCls  = "w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 outline-none transition-all placeholder:text-slate-300";
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
 function buildDuration(fromMonth, fromYear, toMonth, toYear, isPresent) {
   const from = [fromMonth, fromYear].filter(Boolean).join(' ');
   const to   = isPresent ? 'Present' : [toMonth, toYear].filter(Boolean).join(' ');
@@ -24,12 +22,10 @@ function buildDuration(fromMonth, fromYear, toMonth, toYear, isPresent) {
   return `${from} – ${to}`;
 }
 
-// ─── Date Range Picker ────────────────────────────────────────────────────────
 function DateRangePicker({ fromMonth, fromYear, toMonth, toYear, isPresent, onChange }) {
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
-        {/* From */}
         <div>
           <label className={labelCls}>From</label>
           <div className="flex gap-2">
@@ -45,7 +41,6 @@ function DateRangePicker({ fromMonth, fromYear, toMonth, toYear, isPresent, onCh
             </select>
           </div>
         </div>
-        {/* To */}
         <div>
           <label className={labelCls}>To</label>
           {isPresent ? (
@@ -68,7 +63,6 @@ function DateRangePicker({ fromMonth, fromYear, toMonth, toYear, isPresent, onCh
           )}
         </div>
       </div>
-      {/* Present toggle */}
       <button type="button" onClick={() => onChange('isPresent', !isPresent)}
         className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${isPresent ? 'text-orange-600' : 'text-slate-400 hover:text-slate-700'}`}>
         <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${isPresent ? 'bg-orange-500 border-orange-500' : 'border-slate-300'}`}>
@@ -80,7 +74,6 @@ function DateRangePicker({ fromMonth, fromYear, toMonth, toYear, isPresent, onCh
   );
 }
 
-// ─── Shared sub-components ────────────────────────────────────────────────────
 function Section({ icon, iconBg, title, sub, action, children }) {
   return (
     <div className="bg-white border border-slate-200 rounded-[32px] p-8 md:p-10 shadow-sm">
@@ -157,7 +150,6 @@ function EmptyState({ show, label }) {
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ResumeBuilder() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -197,7 +189,6 @@ export default function ResumeBuilder() {
     finally { setLoading(false); }
   };
 
-  // ── Field updaters ────────────────────────────────────────────────────────
   const handlePersonal = (f, v) => setFormData(p => ({ ...p, personal_info: { ...p.personal_info, [f]: v } }));
   const handleSkill    = (f, v) => setFormData(p => ({ ...p, skills: { ...p.skills, [f]: v } }));
 
@@ -220,7 +211,6 @@ export default function ResumeBuilder() {
   const removeItem = (key, i) =>
     setFormData({ ...formData, [key]: formData[key].filter((_, idx) => idx !== i) });
 
-  // ── Add new entries ───────────────────────────────────────────────────────
   const addExperience = () => setFormData(p => ({
     ...p, experience: [...p.experience, { title:'', company:'', location:'', fromMonth:'', fromYear:'', toMonth:'', toYear:'', isPresent:false, bullets:[''] }]
   }));
@@ -231,7 +221,6 @@ export default function ResumeBuilder() {
     ...p, education: [...p.education, { degree:'', field:'', institution:'', gpa:'', fromMonth:'', fromYear:'', toMonth:'', toYear:'', isPresent:false }]
   }));
 
-  // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -271,7 +260,6 @@ export default function ResumeBuilder() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 pb-32">
 
-      {/* ── Nav ───────────────────────────────────────────────────────────── */}
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-4 group">
@@ -308,7 +296,6 @@ export default function ResumeBuilder() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* ── 01: PERSONAL INFO ─────────────────────────────────────────── */}
           <Section icon={<User size={20} />} iconBg="bg-orange-50 text-orange-600" title="Identity Details" sub="How recruiters and AI will identify you">
             <div className="grid md:grid-cols-2 gap-x-6 gap-y-6">
               {[
@@ -330,7 +317,7 @@ export default function ResumeBuilder() {
             </div>
           </Section>
 
-          {/* ── 02: EXPERIENCE ────────────────────────────────────────────── */}
+  
           <Section icon={<Briefcase size={20} />} iconBg="bg-blue-50 text-blue-600"
             title="Professional Experience" sub="Detailed work history for AI context"
             action={<AddButton onClick={addExperience} label="Add Role" />}>
@@ -369,7 +356,6 @@ export default function ResumeBuilder() {
             </div>
           </Section>
 
-          {/* ── 03: PROJECTS ──────────────────────────────────────────────── */}
           <Section icon={<FolderGit2 size={20} />} iconBg="bg-emerald-50 text-emerald-600"
             title="Projects" sub="Showcase your builds — include links and tech stack"
             action={<AddButton onClick={addProject} label="Add Project" />}>
@@ -408,7 +394,6 @@ export default function ResumeBuilder() {
             </div>
           </Section>
 
-          {/* ── 04: SKILLS ────────────────────────────────────────────────── */}
           <Section icon={<Cpu size={20} />} iconBg="bg-purple-50 text-purple-600"
             title="Skills" sub="Comma-separated — mapped directly to resume sections">
             <div className="grid md:grid-cols-2 gap-x-6 gap-y-6">
@@ -432,7 +417,6 @@ export default function ResumeBuilder() {
             </div>
           </Section>
 
-          {/* ── 05: EDUCATION ─────────────────────────────────────────────── */}
           <Section icon={<GraduationCap size={20} />} iconBg="bg-sky-50 text-sky-600"
             title="Education" sub="Degrees, institutions, and graduation dates"
             action={<AddButton onClick={addEducation} label="Add Education" />}>
@@ -466,7 +450,6 @@ export default function ResumeBuilder() {
             </div>
           </Section>
 
-          {/* ── Floating Footer ────────────────────────────────────────────── */}
           <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-[100]">
             <div className="bg-slate-900/95 backdrop-blur-xl border border-white/10 p-3 rounded-[28px] shadow-2xl flex items-center gap-3">
               <Link href="/dashboard"

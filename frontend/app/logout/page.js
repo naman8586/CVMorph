@@ -10,11 +10,9 @@ export default function LogoutPage() {
 
   useEffect(() => {
     const handleLogout = async () => {
-      // 1. Clear Authentication
       localStorage.removeItem('token'); 
       localStorage.removeItem('user');
       
-      // 2. Short delay for the animation to play
       const timeout = setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -27,11 +25,9 @@ export default function LogoutPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center text-slate-900 font-sans overflow-hidden">
-      {/* Soft Background Decor */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-100/50 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="relative flex flex-col items-center">
-        {/* Animated Icon Container */}
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -68,7 +64,6 @@ export default function LogoutPage() {
           Disconnecting Session...
         </motion.p>
 
-        {/* Minimalist Progress Loader */}
         <div className="w-48 h-[3px] bg-slate-200 rounded-full relative overflow-hidden">
           <motion.div 
             initial={{ scaleX: 0 }}
@@ -85,7 +80,7 @@ export default function LogoutPage() {
         transition={{ delay: 1 }}
         className="absolute bottom-12 text-[10px] font-bold text-slate-300 uppercase tracking-widest"
       >
-        CVMorph v1.2.0 — Secure Logout
+        CVMorph 
       </motion.footer>
     </div>
   );

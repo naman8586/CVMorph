@@ -41,15 +41,7 @@ export default function Home() {
             
             {/* Left Column: Content */}
             <div className="space-y-8 text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-sm animate-fade-in">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                </span>
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
-                  v2.0: Now powered by Gemini 1.5 Pro
-                </span>
-              </div>
+              
 
               <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
                 Stop Applying With <br />
@@ -66,12 +58,10 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <Button
-                  text="Start Morphing"
+                  text="Let's Get Morphing"
+                  href="/login"
                   className="w-full sm:w-56 h-14 bg-slate-900 text-white text-lg border-none shadow-2xl hover:scale-105 transition-transform"
                 />
-                <button className="flex items-center gap-2 px-8 py-4 font-bold text-slate-600 hover:text-orange-600 transition-colors group">
-                  View 88+ Score Templates <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
               </div>
             </div>
 
@@ -108,7 +98,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ATS Match</p>
-                      <p className="text-xl font-black text-slate-900">98% Score</p>
+                      <p className="text-xl font-black text-slate-900">90% Score</p>
                     </div>
                  </div>
               </div>

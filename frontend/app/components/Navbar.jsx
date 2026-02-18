@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Sparkles, Menu, X, ChevronRight } from "lucide-react";
-import { Button } from "./ui/Button"; // Corrected import path
+import { Button } from "./ui/Button";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
@@ -14,6 +14,7 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -31,17 +32,13 @@ const Navbar = () => {
         "fixed top-0 w-full z-50 transition-all duration-500",
         isScrolled
           ? "bg-white/70 backdrop-blur-xl border-b border-orange-100/50 py-3 shadow-sm"
-          : "bg-transparent border-b border-transparent py-6",
+          : "bg-transparent border-b border-transparent py-6"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* --- LOGO SECTION --- */}
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative">
-            {/* Animated Background Glow - Now with a "Pulse" effect on hover */}
             <div className="absolute -inset-1.5 bg-gradient-to-tr from-orange-600 via-orange-400 to-amber-300 rounded-xl blur-md opacity-20 group-hover:opacity-60 group-hover:blur-lg transition-all duration-500 animate-pulse" />
-
-            {/* Logo Icon Box */}
             <div className="relative w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center shadow-2xl group-hover:rotate-[-4deg] group-hover:scale-110 transition-all duration-300 border border-white/10">
               <div className="flex flex-col items-center leading-none">
                 <span className="text-orange-400 font-black text-[12px] tracking-tighter">
@@ -56,17 +53,14 @@ const Navbar = () => {
               <span className="text-2xl font-black tracking-tighter text-slate-900 leading-none">
                 Morph
               </span>
-              {/* Animated underline that expands on hover */}
               <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-orange-500 group-hover:w-full transition-all duration-300 ease-out rounded-full" />
             </div>
-
-            {/* Brand Tagline: Adds professional "SaaS" polish */}
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 group-hover:text-slate-600 transition-colors">
               Neural Architect
             </span>
           </div>
         </Link>
-        {/* --- DESKTOP NAVIGATION --- */}
+
         <nav className="hidden lg:flex items-center bg-slate-100/50 border border-slate-200/50 rounded-full px-8 py-2 gap-8 backdrop-blur-sm">
           {navLinks.map((link) => (
             <Link
@@ -80,7 +74,6 @@ const Navbar = () => {
           ))}
         </nav>
 
-        {/* --- ACTIONS --- */}
         <div className="flex items-center gap-3 md:gap-6">
           <Link
             href="/login"
@@ -89,14 +82,12 @@ const Navbar = () => {
             Sign In
           </Link>
 
-          {/* Using your custom Button component */}
           <Button
             text="Get Started"
             className="w-36 h-11 bg-slate-900 text-white border-none shadow-xl shadow-slate-200"
             onClick={() => (window.location.href = "/register")}
           />
 
-          {/* Mobile Toggle */}
           <button
             className="lg:hidden p-2 bg-slate-100 rounded-xl text-slate-600 hover:text-orange-500 transition-all"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -106,11 +97,12 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* --- MOBILE OVERLAY --- */}
       <div
         className={cn(
           "absolute top-full left-0 w-full bg-white/95 backdrop-blur-2xl border-b border-slate-100 transition-all duration-500 lg:hidden overflow-hidden shadow-2xl",
-          isMobileMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+          isMobileMenuOpen
+            ? "max-h-[500px] opacity-100"
+            : "max-h-0 opacity-0"
         )}
       >
         <div className="p-8 space-y-6">
@@ -125,7 +117,7 @@ const Navbar = () => {
                 <span className="text-lg font-bold text-slate-800 group-hover:text-orange-500 transition-colors">
                   {link.name}
                 </span>
-                <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-orange-500 transform group-hover:translate-x-1 transition-all" />
+                <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
               </Link>
             ))}
           </div>

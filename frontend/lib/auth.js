@@ -1,11 +1,5 @@
-// lib/auth.js
-
 const TOKEN_KEY = "token";
 const USER_KEY = "user";
-
-// --------------------
-// Token helpers
-// --------------------
 
 export const getToken = () => {
   if (typeof window === "undefined") return null;
@@ -23,10 +17,6 @@ export const removeToken = () => {
   if (typeof window === "undefined") return;
   localStorage.removeItem(TOKEN_KEY);
 };
-
-// --------------------
-// User helpers
-// --------------------
 
 export const getUser = () => {
   if (typeof window === "undefined") return null;
@@ -53,10 +43,6 @@ export const removeUser = () => {
   localStorage.removeItem(USER_KEY);
 };
 
-// --------------------
-// Auth state helpers
-// --------------------
-
 export const isAuthenticated = () => {
   const token = getToken();
   const user = getUser();
@@ -68,14 +54,9 @@ export const clearAuth = () => {
   removeUser();
 };
 
-// --------------------
-// Logout
-// --------------------
-
 export const logout = (router) => {
   clearAuth();
 
-  // Prefer Next.js router if available
   if (router) {
     router.push("/login");
   } else if (typeof window !== "undefined") {

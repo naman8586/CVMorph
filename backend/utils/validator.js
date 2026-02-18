@@ -1,6 +1,6 @@
 const { body } = require('express-validator');
 
-// Validation rules for user registration
+
 exports.registerValidation = [
   body('email')
     .isEmail()
@@ -17,7 +17,6 @@ exports.registerValidation = [
     .withMessage('Name must be at least 2 characters')
 ];
 
-// Validation rules for resume data
 exports.resumeValidation = [
   body('personal_info.name')
     .optional()

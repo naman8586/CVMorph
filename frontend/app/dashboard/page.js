@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,24 +16,16 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [versions, setVersions] = useState([]);
   const [roles, setRoles] = useState([]);
-
-  // Modals
   const [showAIModal, setShowAIModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // version to confirm-delete
-
-  // AI adapt
   const [selectedRole, setSelectedRole] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
-
-  // Upload
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [uploadError, setUploadError] = useState("");
-
-  // Delete
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -72,7 +63,6 @@ export default function Dashboard() {
     router.push("/login");
   };
 
-  // ── Upload / Parse ────────────────────────────────────────────────────────
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -114,7 +104,6 @@ export default function Dashboard() {
 
     } catch (error) {
       console.error("Resume upload failed:", error);
-      // Surface the actual server message so it's debuggable
       const serverMsg =
         error.response?.data?.message ||
         error.response?.data?.debug ||
@@ -127,7 +116,6 @@ export default function Dashboard() {
     }
   };
 
-  // ── AI Adapt ──────────────────────────────────────────────────────────────
   const handleAdaptResume = async () => {
     if (!selectedRole) return;
     setAiLoading(true);
@@ -144,7 +132,6 @@ export default function Dashboard() {
     }
   };
 
-  // ── Delete Version ────────────────────────────────────────────────────────
   const handleDeleteVersion = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
@@ -152,7 +139,7 @@ export default function Dashboard() {
       await resumeAPI.deleteVersion(deleteTarget.id);
       setVersions((prev) => prev.filter((v) => v.id !== deleteTarget.id));
       setDeleteTarget(null);
-      fetchData(); // refresh stats count too
+      fetchData(); 
     } catch (error) {
       alert(error.response?.data?.message || "Failed to delete version.");
     } finally {
@@ -160,7 +147,6 @@ export default function Dashboard() {
     }
   };
 
-  // ── Loading screen ────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
@@ -182,7 +168,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 selection:bg-orange-100">
-      {/* Background Decor */}
+    
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-100/30 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-100/20 rounded-full blur-[120px]" />
@@ -190,7 +176,6 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
 
-        {/* ── Navbar ────────────────────────────────────────────────────── */}
         <header className="flex justify-between items-center mb-12">
           <Link href="/" className="flex items-center gap-4 group">
             <div className="relative">
@@ -215,7 +200,6 @@ export default function Dashboard() {
           </button>
         </header>
 
-        {/* ── Stats Grid ────────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {[
             { label: "Base Integrity", val: stats?.hasBaseResume ? "STABLE" : "MISSING", icon: ShieldCheck, color: stats?.hasBaseResume ? "text-green-600" : "text-red-500" },
@@ -233,7 +217,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* ── Primary Actions ───────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
           <button onClick={() => { setUploadError(""); setShowUploadModal(true); }}
             className="group bg-white border border-slate-200 text-slate-900 font-bold uppercase tracking-widest text-[11px] py-5 rounded-2xl hover:border-slate-900 transition-all flex items-center justify-center gap-2 shadow-sm">
@@ -249,8 +232,6 @@ export default function Dashboard() {
             <Sparkles size={16} className="text-orange-400" /> AI Morph
           </button>
         </div>
-
-        {/* ── Version History ───────────────────────────────────────────── */}
         <div className="bg-white border border-slate-200 rounded-[40px] shadow-sm overflow-hidden mb-20">
           <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h2 className="text-xl font-bold tracking-tight flex items-center gap-3">
@@ -274,7 +255,6 @@ export default function Dashboard() {
                   <motion.div key={v.id} whileHover={{ y: -4 }}
                     className="bg-white border border-slate-200 p-6 rounded-3xl hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5 transition-all group relative">
 
-                    {/* Delete button */}
                     <button
                       onClick={() => setDeleteTarget(v)}
                       className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-xl text-slate-200 hover:text-red-500 hover:bg-red-50 transition-all"
@@ -316,11 +296,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-      {/* ── Modal System ─────────────────────────────────────────────────── */}
       <AnimatePresence>
 
-        {/* Upload Modal */}
         {showUploadModal && (
           <Modal onClose={() => { setShowUploadModal(false); setUploadFile(null); setUploadProgress(""); setUploadError(""); }}
             title="Upload Source" sub="Convert your existing resume into a neural profile.">
@@ -344,7 +321,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* ← This surfaces the actual server error so you can debug */}
               {uploadError && (
                 <div className="text-red-600 text-[10px] font-bold bg-red-50 border border-red-100 rounded-xl px-4 py-3 flex items-start gap-2">
                   <AlertTriangle size={12} className="mt-0.5 shrink-0" />
@@ -362,7 +338,6 @@ export default function Dashboard() {
           </Modal>
         )}
 
-        {/* AI Morph Modal */}
         {showAIModal && (
           <Modal onClose={() => { setShowAIModal(false); setSelectedRole(""); setJobDescription(""); }}
             title="AI Adaptation" sub="Morph your base resume for a specific role.">
@@ -393,7 +368,6 @@ export default function Dashboard() {
           </Modal>
         )}
 
-        {/* Delete Confirm Modal */}
         {deleteTarget && (
           <Modal onClose={() => setDeleteTarget(null)} title="Delete Version" sub={`This will permanently remove the "${deleteTarget.role}" version.`}>
             <div className="space-y-5">
@@ -422,7 +396,6 @@ export default function Dashboard() {
   );
 }
 
-// ── Shared Modal wrapper ────────────────────────────────────────────────────
 function Modal({ onClose, title, sub, children }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
