@@ -6,9 +6,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 
@@ -66,32 +63,48 @@ export const resumeAPI = {
   deleteVersion: (id) => api.delete(`/api/resume/versions/${id}`),
   getStats: () => api.get("/api/resume/stats"),
 
-  // PDF download (uses Authorization header)
+  // PDF download
   downloadPDF: async (id) => {
     const response = await api.get(`/api/resume/pdf/${id}`, {
       responseType: "blob",
     });
 
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
+    const blob = new Blob([response.data], {
+      type: "application/pdf",
+    });
 
+    const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "resume.pdf";
     document.body.appendChild(a);
     a.click();
     a.remove();
-
     window.URL.revokeObjectURL(url);
   },
 };
 
 // -----------------------------
-// AI API
+// AI API  
 // -----------------------------
 export const aiAPI = {
+  // Get supported roles
   getRoles: () => api.get("/api/ai/roles"),
+
+  // Adapt resume for role
   adaptResume: (data) => api.post("/api/ai/adapt", data),
+
+  // 🔥 NEW: Parse resume file (PDF / DOCX / TXT)
+  parseResumeFile: async (file) => {
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    return api.post("/api/ai/parse-resume", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 export default api;

@@ -1,423 +1,306 @@
-"use client"
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { isAuthenticated } from '../lib/auth';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Sparkles,
+  Zap,
+  Layout,
+  Upload,
+  Brain,
+  FileText,
+  ShieldCheck,
+  Star,
+  Layers,
+  Cpu,
+  ArrowUpRight,
+  Trophy,
+} from "lucide-react";
+
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import { Button } from "./components/ui/Button";
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      router.push('/dashboard');
-    }
-  }, [router]);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">CV</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">CVMorph</span>
-            </div>
-            <div className="flex gap-3">
-              <Link href="/login">
-                <button className="btn btn-outline">Login</button>
-              </Link>
-              <Link href="/register">
-                <button className="btn btn-primary">Get Started Free</button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <main className="min-h-screen bg-[#FAFAFA] text-slate-900 selection:bg-orange-100">
+      <Navbar />
 
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="text-center">
-          <div className="inline-block mb-4">
-            <span className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold">
-              ✨ Powered by FREE Gemini AI
-            </span>
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            One Resume. Multiple Roles.<br />
-            <span className="bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
-              Optimized by AI.
-            </span>
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Transform your single source of truth into role-specific, ATS-approved resumes automatically. 
-            <strong className="text-gray-900"> Stop rewriting. Start landing interviews.</strong>
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Link href="/register">
-              <button className="btn btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-shadow">
-                🚀 Create Your First Resume
-              </button>
-            </Link>
-            <Link href="/login">
-              <button className="btn btn-outline text-lg px-8 py-4">
-                Sign In
-              </button>
-            </Link>
-          </div>
-
-          <p className="text-sm text-gray-500">
-            ✓ No credit card required  ✓ Free forever  ✓ 1,500 AI requests/day
-          </p>
+      {/* ================= HERO SECTION (RE-DESIGNED) ================= */}
+      <section className="relative pt-32 lg:pt-48 pb-20 overflow-hidden">
+        {/* Decorative Background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-100/30 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-blue-100/20 rounded-full blur-[100px]" />
         </div>
 
-        {/* Stats */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">6</div>
-            <div className="text-gray-600">Specialized Roles</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">100%</div>
-            <div className="text-gray-600">ATS Compatible</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary-600 mb-2">FREE</div>
-            <div className="text-gray-600">Forever & Always</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why CVMorph?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Built by developers, for developers who are tired of resume optimization
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">🎯</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">One Source of Truth</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Enter your experience, education, and projects once. AI adapts it for every role automatically—no copy-paste, no duplication.
-              </p>
-            </div>
-
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">🤖</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">AI-Powered Optimization</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Free Gemini AI rewrites bullets with role-specific keywords, emphasizes relevant skills, and reorders sections for maximum impact.
-              </p>
-            </div>
-
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">✅</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">ATS-Approved Template</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Single-column, parser-friendly format based on proven resume. No tables, graphics, or formatting that breaks ATS systems.
-              </p>
-            </div>
-
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">🔒</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">No Hallucination</h3>
-              <p className="text-gray-600 leading-relaxed">
-                AI never invents experience or skills. It only rewrites and emphasizes what you actually have—100% factually accurate.
-              </p>
-            </div>
-
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">📄</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">Instant PDF Export</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Download professional, ATS-ready PDFs instantly. Perfect formatting every time, ready to submit to any job portal.
-              </p>
-            </div>
-
-            <div className="card text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">🔄</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3">Version Control</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Keep track of all resume versions. Compare different role adaptations and see exactly what the AI changed.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* How It Works */}
-      <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From profile to perfect resume in 4 simple steps
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">
-                1
-              </div>
-              <h4 className="font-bold text-lg mb-2">Create Base Resume</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Enter your experience, education, projects, and skills once. This is your single source of truth.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">
-                2
-              </div>
-              <h4 className="font-bold text-lg mb-2">Select Target Role</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Choose from Frontend, Backend, Python, Full Stack, DevOps, or Data Analyst roles.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">
-                3
-              </div>
-              <h4 className="font-bold text-lg mb-2">AI Optimizes</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Free Gemini AI adapts your content with role-specific keywords and emphasis in 10-30 seconds.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">
-                4
-              </div>
-              <h4 className="font-bold text-lg mb-2">Download & Apply</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Get your ATS-ready PDF instantly. Submit to job portals with confidence.
-              </p>
-            </div>
-          </div>
-
-          {/* Example flow */}
-          <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
-            <h3 className="font-bold text-xl mb-6 text-center">Example: Same Experience, Different Focus</h3>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="border-l-4 border-blue-500 pl-4">
-                <div className="text-sm font-semibold text-blue-600 mb-2">FRONTEND DEVELOPER</div>
-                <p className="text-gray-700 text-sm">
-                  Developed <strong>responsive UI components</strong> using <strong>React</strong> and modern <strong>JavaScript</strong> frameworks with focus on <strong>user experience</strong> and <strong>cross-browser compatibility</strong>.
-                </p>
+            {/* Left Column: Content */}
+            <div className="space-y-8 text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-sm animate-fade-in">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                </span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                  v2.0: Now powered by Gemini 1.5 Pro
+                </span>
               </div>
 
-              <div className="border-l-4 border-purple-500 pl-4">
-                <div className="text-sm font-semibold text-purple-600 mb-2">BACKEND DEVELOPER</div>
-                <p className="text-gray-700 text-sm">
-                  Architected <strong>scalable backend services</strong> with <strong>Node.js</strong> and <strong>Express</strong>, implementing <strong>RESTful APIs</strong> and <strong>database optimization</strong> for high-throughput applications.
-                </p>
+              <h1 className="text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+                Stop Applying With <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-400 italic font-serif leading-normal">
+                  The Same Resume.
+                </span>
+              </h1>
+
+              <p className="text-lg md:text-xl text-slate-500 max-w-xl leading-relaxed">
+                CVMorph is the Morphing Engine for your career. We adapt your 
+                master experience into surgical, role-specific versions that 
+                beat the ATS without compromising the truth.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <Button
+                  text="Start Morphing"
+                  className="w-full sm:w-56 h-14 bg-slate-900 text-white text-lg border-none shadow-2xl hover:scale-105 transition-transform"
+                />
+                <button className="flex items-center gap-2 px-8 py-4 font-bold text-slate-600 hover:text-orange-600 transition-colors group">
+                  View 88+ Score Templates <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
 
-            <p className="text-center text-gray-500 text-sm mt-4">
-              ↑ Same original bullet, adapted automatically by AI for different roles
-            </p>
+            {/* Right Column: Visual */}
+            <div className="relative group">
+              {/* Decorative Glow */}
+              <div className="absolute -inset-4 bg-gradient-to-tr from-orange-500/20 to-blue-500/20 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              
+              <div className="relative rounded-[32px] overflow-hidden bg-white shadow-2xl border border-slate-200">
+                <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border-b border-slate-200">
+                   <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                   </div>
+                   <div className="mx-auto bg-white border border-slate-200 px-3 py-0.5 rounded text-[9px] font-mono text-slate-400">
+                      app.cvmorph.ai/editor/master
+                   </div>
+                </div>
+                <Image
+                  src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=1200"
+                  alt="Product Interface"
+                  width={1200}
+                  height={800}
+                  className="w-full object-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Floating Match Rate Card */}
+              <div className="absolute -right-6 -bottom-6 p-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 animate-bounce-slow hidden md:block">
+                 <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
+                      <Trophy size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ATS Match</p>
+                      <p className="text-xl font-black text-slate-900">98% Score</p>
+                    </div>
+                 </div>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Supported Roles */}
-      <div className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Supported Roles
-            </h2>
-            <p className="text-xl text-gray-600">
-              Optimize your resume for any technical role
-            </p>
+      {/* ================= BENTO FEATURES GRID ================= */}
+      <section id="features" className="py-32 px-6 bg-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-20">
+             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Engineered for Results.</h2>
+             <p className="text-slate-500 text-lg">Detailed precision in every line of your career story.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { role: 'Frontend Developer', icon: '🎨', desc: 'React, JavaScript, UI/UX, responsive design' },
-              { role: 'Backend Developer', icon: '⚙️', desc: 'Node.js, APIs, databases, architecture' },
-              { role: 'Python Developer', icon: '🐍', desc: 'Python, Flask, Django, automation' },
-              { role: 'Full Stack Developer', icon: '🚀', desc: 'End-to-end development, MERN/MEAN stack' },
-              { role: 'DevOps Engineer', icon: '🔧', desc: 'CI/CD, Docker, Kubernetes, cloud' },
-              { role: 'Data Analyst', icon: '📊', desc: 'SQL, visualization, analytics, reporting' },
-            ].map((item) => (
-              <div key={item.role} className="card hover:border-primary-500 transition-all hover:shadow-md">
-                <div className="flex items-start gap-4">
-                  <span className="text-4xl">{item.icon}</span>
-                  <div>
-                    <h3 className="font-bold text-lg mb-1">{item.role}</h3>
-                    <p className="text-gray-600 text-sm">{item.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6">
+            {/* Main Feature - Bento Large */}
+            <div className="md:col-span-3 lg:col-span-7 bg-slate-50 p-10 rounded-[40px] border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between overflow-hidden relative group">
+               <div className="relative z-10">
+                  <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-orange-200">
+                    <Cpu size={28} />
                   </div>
+                  <h3 className="text-3xl font-bold mb-4">Dual AI Inference Engine</h3>
+                  <p className="text-slate-500 text-lg leading-relaxed max-w-md">
+                    We use Gemini 1.5 Pro for creative logic and Groq (Llama 3) for 
+                    ultra-fast structural analysis. You get the best of both worlds.
+                  </p>
+               </div>
+               <div className="absolute right-[-20px] bottom-[-20px] opacity-[0.03] group-hover:opacity-10 transition-opacity">
+                  <Cpu size={300} strokeWidth={1} />
+               </div>
+            </div>
+
+            {/* Feature 2 - Bento Small */}
+            <div className="md:col-span-3 lg:col-span-5 bg-slate-900 p-10 rounded-[40px] text-white flex flex-col justify-between">
+                <div>
+                   <h3 className="text-2xl font-bold mb-4">Zero Hallucination Policy</h3>
+                   <p className="text-slate-400 leading-relaxed">
+                     Our AI is constrained by your source data. It will never invent 
+                     a job or a skill you do not actually have.
+                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonial / Trust Section */}
-      <div className="py-20 bg-gradient-to-br from-primary-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12">
-              Why Developers Trust CVMorph
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <div className="text-5xl mb-4">⏱️</div>
-                <div className="text-2xl font-bold text-primary-600 mb-2">80% Faster</div>
-                <p className="text-gray-600">Resume creation time reduced dramatically</p>
-              </div>
-
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <div className="text-5xl mb-4">✨</div>
-                <div className="text-2xl font-bold text-primary-600 mb-2">100% Accurate</div>
-                <p className="text-gray-600">AI never invents fake experience or skills</p>
-              </div>
-
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <div className="text-5xl mb-4">🎯</div>
-                <div className="text-2xl font-bold text-primary-600 mb-2">ATS Optimized</div>
-                <p className="text-gray-600">Proven template that passes screening systems</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Final CTA */}
-      <div className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="card bg-gradient-to-r from-primary-600 to-purple-600 text-white p-12 shadow-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Land Your Dream Job?
-            </h2>
-            <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-              Join developers who are adapting their resumes with AI. Completely free, forever. No credit card required.
-            </p>
-            <Link href="/register">
-              <button className="bg-white text-primary-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg">
-                Get Started Free →
-              </button>
-            </Link>
-            <p className="text-sm mt-6 opacity-75">
-              ✓ Takes 5 minutes  ✓ No credit card  ✓ 1,500 free AI requests daily
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-          
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-2">Is it really free?</h3>
-              <p className="text-gray-600">
-                Yes! CVMorph uses Google free Gemini API tier (1,500 requests/day). No hidden costs, no credit card required.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-2">Will the AI invent fake experience?</h3>
-              <p className="text-gray-600">
-                Never. The AI only rewrites and emphasizes your real experience. It cannot add skills, jobs, or achievements you didnt provide.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-2">How does it work with ATS systems?</h3>
-              <p className="text-gray-600">
-                Our template uses a proven single-column format with no tables or graphics. Its optimized for Applicant Tracking Systems to parse correctly.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-2">Can I edit the AI-generated content?</h3>
-              <p className="text-gray-600">
-                Yes! You always have full control. Review and edit everything before downloading your PDF.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">CV</span>
+                <div className="flex gap-2 mt-8">
+                   <div className="px-4 py-2 rounded-full border border-slate-700 text-[10px] font-bold uppercase tracking-widest text-slate-300">Verified Data</div>
+                   <div className="px-4 py-2 rounded-full border border-slate-700 text-[10px] font-bold uppercase tracking-widest text-slate-300">Safe Output</div>
                 </div>
-                <span className="text-xl font-bold">CVMorph</span>
-              </div>
-              <p className="text-gray-400 text-sm">
-                AI-powered resume optimization for developers. Built with ❤️ to help you land your dream job.
-              </p>
             </div>
 
-            <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="/register" className="hover:text-white">Get Started</Link></li>
-                <li><Link href="/login" className="hover:text-white">Sign In</Link></li>
-                <li><span className="cursor-not-allowed">Pricing (Free Forever)</span></li>
-              </ul>
+            {/* Feature 3 - Bento Medium */}
+            <div id="templates" className="md:col-span-2 lg:col-span-4 bg-orange-50 p-8 rounded-[40px] border border-orange-100 scroll-mt-20">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-orange-600 mb-6 shadow-sm">
+                  <FileText size={24} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">ATS-Perfect PDFs</h3>
+                <p className="text-slate-600 text-sm">
+                  Standardized LaTeX-inspired layouts that every parsing bot can read flawlessly.
+                </p>
             </div>
 
-            <div>
-              <h4 className="font-bold mb-4">Technology</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>Next.js 14</li>
-                <li>Node.js + Express</li>
-                <li>PostgreSQL</li>
-                <li>Google Gemini AI (Free)</li>
-              </ul>
+            {/* Feature 4 - Bento Medium */}
+            <div className="md:col-span-2 lg:col-span-4 bg-white p-8 rounded-[40px] border border-slate-200">
+                <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 mb-6">
+                  <Layers size={24} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Version Control</h3>
+                <p className="text-slate-500 text-sm">
+                  Compare versions side-by-side to see how the AI improved your impact verbs.
+                </p>
             </div>
-          </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>© 2024 CVMorph. Built to help developers land jobs.</p>
-            <p className="mt-2">Powered by Free Google Gemini AI • Open Source Project</p>
+             {/* Feature 5 - Bento Medium */}
+             <div className="md:col-span-2 lg:col-span-4 bg-blue-50 p-8 rounded-[40px] border border-blue-100">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-blue-600 mb-6 shadow-sm">
+                  <ShieldCheck size={24} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Privacy Encryption</h3>
+                <p className="text-slate-600 text-sm">
+                  Your data is yours. We do not train our models on your personal resume info.
+                </p>
+            </div>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+
+      {/* ================= DYNAMIC WORKFLOW ================= */}
+      <section id="how-it-works" className="py-32 bg-slate-900 text-white overflow-hidden relative scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-24">
+            <div className="max-w-xl">
+               <h2 className="text-4xl md:text-5xl font-bold mb-6">From Master to Specialized.</h2>
+               <p className="text-slate-400 text-lg">No more manual editing. No more copy-pasting into ChatGPT.</p>
+            </div>
+            <div className="flex gap-4">
+               <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center text-slate-500 font-bold">01</div>
+               <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center text-slate-500 font-bold">02</div>
+               <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 font-bold">03</div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-12">
+             {[
+               { title: "Upload Source", desc: "Drag and drop your messy master resume. Our parser cleans the data structure.", icon: <Upload className="text-orange-500"/> },
+               { title: "Pick Your Morph", desc: "Choose the job role or paste a JD. The Dual-AI engine analyzes the gaps.", icon: <Sparkles className="text-blue-400"/> },
+               { title: "Export Excellence", desc: "Download a beautiful, clean, ATS-scoring PDF tailored for that specific role.", icon: <ArrowUpRight className="text-green-400"/> }
+             ].map((step, idx) => (
+               <div key={idx} className="group">
+                  <div className="mb-6 w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                  <p className="text-slate-400 leading-relaxed">{step.desc}</p>
+               </div>
+             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= SUCCESS STORIES (Social Proof) ================= */}
+      <section id="success" className="py-32 bg-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+           <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4 pt-12">
+                 <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 shadow-sm">
+                    <p className="text-3xl font-bold mb-1">95%</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">More Callbacks</p>
+                 </div>
+                 <div className="bg-orange-50 p-8 rounded-[32px] border border-orange-100 shadow-sm">
+                    <p className="text-3xl font-bold mb-1">100k+</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Users globally</p>
+                 </div>
+              </div>
+              <div className="space-y-4">
+                 <div className="bg-blue-50 p-8 rounded-[32px] border border-blue-100 text-center py-20 flex flex-col items-center shadow-sm">
+                    <Star className="text-blue-500 mb-4" fill="currentColor" size={32}/>
+                    <p className="font-bold text-slate-900 leading-tight">Top Rated AI Resume Tool 2024</p>
+                 </div>
+              </div>
+           </div>
+           
+           <div className="space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">The difference between a rejection and an interview.</h2>
+              <p className="text-slate-500 text-lg leading-relaxed italic">The ROI on this tool is incredible. I spent months manually editing resumes. With CVMorph, I applied to 10 jobs in 10 minutes, all perfectly tailored. Landed an offer at a Series B startup 2 weeks later.</p>
+              <div className="flex items-center gap-4 pt-4">
+                 <div className="w-14 h-14 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden">
+                    <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100" width={100} height={100} alt="User" />
+                 </div>
+                 <div>
+                    <p className="font-bold text-slate-900">Alex Rivera</p>
+                    <p className="text-sm text-slate-400 font-semibold tracking-wide">Full Stack Engineer</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* ================= PRICING / FINAL CTA ================= */}
+      <section id="pricing" className="py-24 px-6 bg-[#FDFCFB] scroll-mt-20">
+        <div className="max-w-5xl mx-auto bg-slate-900 rounded-[48px] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl shadow-slate-300">
+           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.15),transparent)] pointer-events-none" />
+           <div className="relative z-10 space-y-8">
+              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">Your career, <br /> perfectly morphed.</h2>
+              <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">Join thousands of professionals using AI to build their career legacy. Start for free, no credit card required.</p>
+              <div className="flex justify-center pt-6">
+                 <Button
+                    text="Get Started for Free"
+                    className="w-full sm:w-64 h-16 bg-gradient-to-r from-orange-500 to-orange-400 text-white text-xl border-none shadow-2xl shadow-orange-900/40 hover:scale-105 transition-transform"
+                 />
+              </div>
+           </div>
+        </div>
+      </section>
+
+      <Footer />
+
+      <style jsx global>{`
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(-5%); }
+          50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 4s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </main>
   );
 }

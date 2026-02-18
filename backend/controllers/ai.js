@@ -1,6 +1,7 @@
-const { model } = require('../config/gemini');
+const aiClient = require('../config/aiClient');
 const ResumeBase = require('../models/ResumeBase');
 const ResumeVersion = require('../models/ResumeVersion');
+const { extractText, validateResumeText } = require('../utils/resumeParser');
 
 // Role-specific optimization prompts
 const ROLE_PROMPTS = {
@@ -30,7 +31,179 @@ const ROLE_PROMPTS = {
   }
 };
 
-// @desc    Adapt resume for specific role using Gemini AI
+// @desc    Get available roles
+// @route   GET /api/ai/roles
+// @access  Public
+exports.getRoles = async (req, res, next) => {
+  try {
+    const roles = Object.keys(ROLE_PROMPTS).map(role => ({
+      name: role,
+      description: ROLE_PROMPTS[role].focus
+    }));
+
+    res.json({
+      success: true,
+      roles
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get AI provider status
+// @route   GET /api/ai/status
+// @access  Public
+exports.getAIStatus = (req, res) => {
+  try {
+    const status = aiClient.status();
+    res.json({ 
+      success: true, 
+      providers: status,
+      primary: aiClient.getPrimaryProvider(),
+      fallback: aiClient.getFallbackProvider()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get AI status'
+    });
+  }
+};
+
+// @desc    Parse uploaded resume file
+// @route   POST /api/ai/parse-resume
+// @access  Private
+exports.parseUploadedResume = async (req, res, next) => {
+  try {
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No file uploaded. Please upload a PDF, DOCX, or TXT file.' 
+      });
+    }
+
+    console.log(`📤 File uploaded: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    // Extract text from file
+    const rawText = await extractText(req.file);
+    
+    // Validate extracted text
+    validateResumeText(rawText);
+
+    console.log(`✅ Text extracted successfully (${rawText.length} characters)`);
+
+    // Create AI prompt for parsing - SIMPLIFIED for better JSON generation
+    const prompt = `Extract resume data from this text and return ONLY valid JSON. No markdown, no explanations, ONLY the JSON object.
+
+Resume Text:
+${rawText}
+
+Return EXACTLY this structure:
+{
+  "personal_info": {
+    "name": "Full Name",
+    "phone": "+91-1234567890",
+    "email": "email@example.com",
+    "linkedin": "https://linkedin.com/in/username",
+    "github": "https://github.com/username",
+    "portfolio": "https://website.com",
+    "title": "Job Title",
+    "summary": "Professional summary if available"
+  },
+  "skills": {
+    "languages": ["JavaScript", "Python"],
+    "frontend": ["React", "Next.js"],
+    "backend": ["Node.js", "Express"],
+    "databases": ["PostgreSQL", "MongoDB"],
+    "tools": ["Git", "Docker"]
+  },
+  "experience": [
+    {
+      "title": "Job Title",
+      "company": "Company Name",
+      "location": "City, State",
+      "duration": "Start Date - End Date",
+      "bullets": ["Achievement 1", "Achievement 2"]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Project Name",
+      "technologies": "Tech Stack",
+      "link": "https://github.com/user/project",
+      "bullets": ["Feature 1", "Feature 2"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "University Name",
+      "degree": "Degree Type",
+      "field": "Field of Study",
+      "duration": "Year Range",
+      "gpa": "GPA if available"
+    }
+  ]
+}
+
+IMPORTANT: Return ONLY the JSON. No text before or after.`;
+
+    console.log('🤖 Sending resume to AI for parsing...');
+
+    // Send to AI with increased token limit
+    const aiResponse = await aiClient.generate(prompt);
+
+    // More aggressive cleaning
+    let cleanedResponse = aiResponse
+      .replace(/```json/gi, '')
+      .replace(/```/g, '')
+      .replace(/^[^{]*/, '') // Remove everything before first {
+      .replace(/[^}]*$/, '') // Remove everything after last }
+      .trim();
+
+    // Try to fix common JSON issues
+    try {
+      const parsedResume = JSON.parse(cleanedResponse);
+      
+      console.log('✅ Resume parsed successfully');
+
+      res.json({
+        success: true,
+        message: 'Resume parsed successfully. Review and save to continue.',
+        resume: parsedResume,
+        metadata: {
+          originalFilename: req.file.originalname,
+          fileSize: req.file.size,
+          extractedLength: rawText.length,
+          provider: aiClient.getPrimaryProvider()
+        }
+      });
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError.message);
+      console.error('Cleaned response:', cleanedResponse.substring(0, 500));
+      
+      return res.status(500).json({ 
+        success: false, 
+        message: 'AI returned incomplete data. Try uploading a simpler resume or use the manual form.',
+        debug: cleanedResponse.substring(0, 200)
+      });
+    }
+
+  } catch (error) {
+    console.error('Resume Parse Error:', error);
+    
+    if (error.message.includes('too short') || error.message.includes('does not appear')) {
+      return res.status(400).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    next(error);
+  }
+};
+
+// @desc    Adapt resume for specific role using AI
 // @route   POST /api/ai/adapt
 // @access  Private
 exports.adaptResume = async (req, res, next) => {
@@ -62,7 +235,9 @@ exports.adaptResume = async (req, res, next) => {
       });
     }
 
-    // Prepare data for AI
+    console.log(`🎯 Adapting resume for role: ${role}`);
+
+    // Prepare data for AI - Simplified version
     const resumeContext = {
       personal_info: baseResume.personal_info,
       education: baseResume.education,
@@ -71,85 +246,57 @@ exports.adaptResume = async (req, res, next) => {
       skills: baseResume.skills
     };
 
-    // Build AI prompt
-    const prompt = `You are an expert resume optimizer specializing in ATS (Applicant Tracking Systems) optimization.
+    // Shorter, more focused prompt
+    const prompt = `Rewrite this resume for ${role} role. Keep all facts accurate. Return ONLY valid JSON.
 
-CRITICAL RULES:
-1. NEVER invent or add skills, experiences, or qualifications that are not in the original resume
-2. ONLY rewrite and re-emphasize existing content
-3. Keep ALL facts 100% accurate
-4. Maintain the same job titles, company names, dates, and degree information
-5. Do NOT add metrics or numbers that weren't in the original
-6. Focus on reordering sections and rewriting bullet points for the target role
+TARGET: ${role}
+FOCUS: ${roleConfig.keywords}
 
-TARGET ROLE: ${role}
-ROLE FOCUS: ${roleConfig.focus}
-KEY KEYWORDS: ${roleConfig.keywords}
-
-${jobDescription ? `JOB DESCRIPTION:\n${jobDescription}\n` : ''}
-
-ORIGINAL RESUME DATA:
+ORIGINAL:
 ${JSON.stringify(resumeContext, null, 2)}
 
-YOUR TASK:
-1. Analyze which experiences and projects are most relevant to "${role}"
-2. Rewrite experience bullet points to emphasize relevant skills (use keywords naturally)
-3. Reorder projects to show most relevant ones first
-4. Organize skills to highlight role-specific technologies
-5. Keep education section unchanged
-6. Maintain chronological order within each section
+RULES:
+1. NEVER invent experience
+2. Only rewrite bullet points
+3. Keep job titles, companies, dates exact
+4. Reorder skills by relevance
 
-RESPOND WITH VALID JSON ONLY (no markdown, no code blocks):
+Return this JSON (no markdown):
 {
-  "personal_info": { same as input },
-  "education": [ same as input ],
-  "experience": [
-    {
-      "title": "exact same title",
-      "company": "exact same company",
-      "location": "exact same location", 
-      "duration": "exact same duration",
-      "bullets": ["rewritten bullet emphasizing ${role} skills", "..."]
-    }
-  ],
-  "projects": [
-    {
-      "name": "exact same name",
-      "description": "rewritten to highlight ${role} relevance",
-      "technologies": "exact same technologies",
-      "link": "exact same link",
-      "bullets": ["rewritten bullets with role-specific emphasis"]
-    }
-  ],
-  "skills": {
-    "primary": ["most relevant skills for ${role}"],
-    "secondary": ["other relevant skills"],
-    "tools": ["relevant tools and technologies"]
-  }
+  "personal_info": {...same...},
+  "education": [...same...],
+  "experience": [...rewritten bullets...],
+  "projects": [...reordered...],
+  "skills": {...reordered...}
 }`;
 
-    console.log('🤖 Sending request to Gemini API...');
+    console.log('🤖 Sending request to AI...');
     
-    // Call Gemini API
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let adaptedText = response.text();
+    // Call AI
+    const aiResponse = await aiClient.generate(prompt);
 
-    // Clean up response (remove markdown code blocks if present)
-    adaptedText = adaptedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    // Clean response
+    let cleanedResponse = aiResponse
+      .replace(/```json/gi, '')
+      .replace(/```/g, '')
+      .replace(/^[^{]*/, '')
+      .replace(/[^}]*$/, '')
+      .trim();
 
     let adapted_content;
     try {
-      adapted_content = JSON.parse(adaptedText);
+      adapted_content = JSON.parse(cleanedResponse);
     } catch (parseError) {
-      console.error('Failed to parse AI response:', adaptedText);
+      console.error('Failed to parse AI response');
+      console.error('Response preview:', cleanedResponse.substring(0, 500));
+      
       return res.status(500).json({
         success: false,
-        message: 'AI generated invalid format. Please try again.'
+        message: 'AI response was incomplete. Please try again or use a shorter resume.'
       });
     }
 
-    // Save as new version
+    // Save version
     const version = await ResumeVersion.create({
       resume_base_id: baseResume.id,
       user_id: userId,
@@ -158,10 +305,13 @@ RESPOND WITH VALID JSON ONLY (no markdown, no code blocks):
       adapted_content
     });
 
+    console.log(`✅ Resume adapted successfully (Version ID: ${version.id})`);
+
     res.json({
       success: true,
       message: `Resume adapted for ${role}`,
-      version
+      version,
+      provider: aiClient.getPrimaryProvider()
     });
 
   } catch (error) {
@@ -170,29 +320,10 @@ RESPOND WITH VALID JSON ONLY (no markdown, no code blocks):
     if (error.message && error.message.includes('API key')) {
       return res.status(500).json({
         success: false,
-        message: 'Gemini API key not configured. Please set GEMINI_API_KEY in .env'
+        message: 'AI API keys not configured. Please set GEMINI_API_KEY or GROQ_API_KEY in .env'
       });
     }
 
-    next(error);
-  }
-};
-
-// @desc    Get available roles
-// @route   GET /api/ai/roles
-// @access  Public
-exports.getRoles = async (req, res, next) => {
-  try {
-    const roles = Object.keys(ROLE_PROMPTS).map(role => ({
-      name: role,
-      description: ROLE_PROMPTS[role].focus
-    }));
-
-    res.json({
-      success: true,
-      roles
-    });
-  } catch (error) {
     next(error);
   }
 };

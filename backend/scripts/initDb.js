@@ -4,7 +4,7 @@ const createTables = async () => {
   const client = await pool.connect();
   
   try {
-    console.log('🚀 Initializing CVMorph database...\n');
+    console.log('\n🚀 Initializing CVMorph database...\n');
 
     // Create Users table
     await client.query(`
@@ -59,15 +59,20 @@ const createTables = async () => {
     `);
     console.log('✅ Indexes created');
 
-    console.log('\n🎉 Database initialized successfully!');
-    console.log('📝 Tables created:');
+    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🎉 Database initialized successfully!');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('\n📝 Tables created:');
     console.log('   - users');
     console.log('   - resume_base');
     console.log('   - resume_versions');
-    console.log('\n👉 You can now start the server with: npm run dev\n');
+    console.log('\n📊 Total tables: 3');
+    console.log('🔗 Total indexes: 4');
+    console.log('\n👉 Next step: npm run dev\n');
 
   } catch (error) {
-    console.error('❌ Error initializing database:', error.message);
+    console.error('\n❌ Error initializing database:', error.message);
+    console.error('Stack trace:', error.stack);
     throw error;
   } finally {
     client.release();
@@ -77,6 +82,6 @@ const createTables = async () => {
 
 // Run initialization
 createTables().catch(err => {
-  console.error('Fatal error:', err);
+  console.error('\n💥 Fatal error:', err);
   process.exit(1);
 });

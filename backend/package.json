@@ -28,6 +28,9 @@
     "express-validator": "^7.3.1",
     "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.11.0",
+    "multer": "^2.0.2",
+    "pdfjs-dist": "^5.4.624",
     "pg": "^8.11.5",
     "prisma": "^5.22.0",
     "puppeteer": "^24.37.3"
