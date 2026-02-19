@@ -22,7 +22,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Features", href: "#features" },
     { name: "Templates", href: "#templates" },
-    { name: "Dual AI Engine", href: "#engine" },
+    { name: "How It Works", href: "#how-it-works" },
     { name: "Pricing", href: "#pricing" },
   ];
 
@@ -82,11 +82,12 @@ const Navbar = () => {
             Sign In
           </Link>
 
-          <Button
-            text="Get Started"
-            className="w-36 h-11 bg-slate-900 text-white border-none shadow-xl shadow-slate-200"
-            onClick={() => (window.location.href = "/register")}
-          />
+          <Link href="/register">
+            <Button
+              text="Get Started"
+              className="w-36 h-11 bg-slate-900 text-white border-none shadow-xl shadow-slate-200"
+            />
+          </Link>
 
           <button
             className="lg:hidden p-2 bg-slate-100 rounded-xl text-slate-600 hover:text-orange-500 transition-all"
@@ -125,14 +126,17 @@ const Navbar = () => {
           <div className="pt-6 border-t border-slate-100 flex flex-col gap-4">
             <Link
               href="/login"
-              className="w-full py-4 text-center font-bold text-slate-500 bg-slate-50 rounded-2xl"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full py-4 text-center font-bold text-slate-500 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors"
             >
               Log in to Account
             </Link>
-            <Button
-              text="Claim Free Credits"
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-400 text-white border-none h-14 text-lg"
-            />
+            <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button
+                text="Claim Free Credits"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-400 text-white border-none h-14 text-lg"
+              />
+            </Link>
           </div>
         </div>
       </div>

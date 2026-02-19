@@ -1,3 +1,5 @@
+'use client';
+
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,6 +9,7 @@ const Button = React.forwardRef(
     return (
       <button
         ref={ref}
+        suppressHydrationWarning
         className={cn(
           "group relative w-32 cursor-pointer overflow-hidden rounded-full border bg-background p-2 text-center font-semibold",
           className

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { resumeAPI, aiAPI } from "@/lib/api";
 import {
   Plus, Upload, Sparkles, History, LogOut, FileText,
-  ShieldCheck, Target, X, Trash2, AlertTriangle,
+  ShieldCheck, Target, X, Trash2, AlertTriangle, Download,
 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 
@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [roles, setRoles] = useState([]);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null); // version to confirm-delete
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [uploadProgress, setUploadProgress] = useState("");
   const [uploadError, setUploadError] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [downloading, setDownloading] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -132,6 +133,36 @@ export default function Dashboard() {
     }
   };
 
+  const handleDownloadPDF = async (versionId, roleName) => {
+    setDownloading(versionId);
+    try {
+      const response = await resumeAPI.downloadPDF(versionId);
+      
+      // Create blob from response
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Resume_${roleName.replace(/\s+/g, '_')}.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+    } catch (error) {
+      console.error('PDF download failed:', error);
+      alert(error.response?.data?.message || 'Failed to download PDF. Please try again.');
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   const handleDeleteVersion = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
@@ -232,14 +263,13 @@ export default function Dashboard() {
             <Sparkles size={16} className="text-orange-400" /> AI Morph
           </button>
         </div>
+
         <div className="bg-white border border-slate-200 rounded-[40px] shadow-sm overflow-hidden mb-20">
           <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h2 className="text-xl font-bold tracking-tight flex items-center gap-3">
               <History className="text-orange-500" size={20} /> Version History
             </h2>
             <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-bold text-green-700 tracking-wider">SECURE SYNC</span>
             </div>
           </div>
 
@@ -284,9 +314,17 @@ export default function Dashboard() {
                         className="flex-1 bg-slate-900 text-white text-[9px] font-bold uppercase tracking-widest py-3.5 rounded-xl transition-all hover:bg-slate-800">
                         Preview
                       </button>
-                      <button onClick={() => resumeAPI.downloadPDF(v.id)}
-                        className="flex-1 bg-slate-50 text-slate-400 hover:text-slate-900 text-[9px] font-bold uppercase tracking-widest py-3.5 rounded-xl border border-slate-100 transition-all">
-                        PDF
+                      <button 
+                        onClick={() => handleDownloadPDF(v.id, v.role)}
+                        disabled={downloading === v.id}
+                        className="flex-1 bg-slate-50 text-slate-400 hover:text-slate-900 text-[9px] font-bold uppercase tracking-widest py-3.5 rounded-xl border border-slate-100 transition-all disabled:opacity-50 flex items-center justify-center gap-1">
+                        {downloading === v.id ? (
+                          <div className="w-3 h-3 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <Download size={12} /> PDF
+                          </>
+                        )}
                       </button>
                     </div>
                   </motion.div>
@@ -296,8 +334,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <AnimatePresence>
 
+      <AnimatePresence>
         {showUploadModal && (
           <Modal onClose={() => { setShowUploadModal(false); setUploadFile(null); setUploadProgress(""); setUploadError(""); }}
             title="Upload Source" sub="Convert your existing resume into a neural profile.">

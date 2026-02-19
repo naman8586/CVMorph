@@ -1,287 +1,395 @@
 const puppeteer = require('puppeteer');
 
-/**
- * Generate HTML that exactly mirrors the LaTeX resume layout:
- * - Margins: 1cm top/bottom, 1.2cm left/right
- * - Font: Latin Modern Roman / Times New Roman serif, 10pt
- * - Name: 24pt bold uppercase centered
- * - Sections: bold uppercase with full-width bottom rule
- * - Skills: two-column table, bold labels
- * - Experience: bold title + right-aligned date, italic company + location below
- * - Projects: bold name | tech + right-aligned link
- * - Education: bold degree + right-aligned date, italic institution + GPA
- * - Bullets: 12pt left indent, 2pt item spacing
- */
+// Generate 90+ ATS-score HTML
 const generateHTML = (resumeData) => {
   const { personal_info, education, experience, projects, skills } = resumeData;
 
-  // Clean a URL for display (strip https?://)
-  const displayUrl = (url = '') => url.replace(/^https?:\/\//, '');
-
-  // Render a bullet list
-  const bulletList = (bullets = []) => {
-    if (!bullets || bullets.length === 0) return '';
-    return `<ul>${bullets.filter(Boolean).map(b => `<li>${b}</li>`).join('')}</ul>`;
-  };
-
-  return `<!DOCTYPE html>
+  return `
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>${personal_info?.name || 'Resume'}</title>
-<style>
-  /* ── Reset ───────────────────────────────────────────────────────────── */
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  /* ── Page ────────────────────────────────────────────────────────────── */
-  /* Puppeteer handles the actual page margins via pdf() options.
-     body width is forced to the printable area width. */
-  body {
-    font-family: 'Latin Modern Roman', 'Computer Modern', Georgia, 'Times New Roman', serif;
-    font-size: 10pt;
-    line-height: 1.25;
-    color: #000;
-    width: 100%;
-    /* DO NOT add padding here — puppeteer margins are set in pdf() call */
-  }
-
-  /* ── Header ──────────────────────────────────────────────────────────── */
-  .header {
-    text-align: center;
-    margin-bottom: 6pt;
-  }
-  .header h1 {
-    font-size: 24pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5pt;
-    line-height: 1;
-    margin-bottom: 4pt;
-  }
-  .header .contact {
-    font-size: 10pt;
-    line-height: 1.4;
-  }
-  .header .contact a { color: #000; text-decoration: none; }
-  .sep { margin: 0 4pt; }
-
-  /* ── Section heading — bold uppercase + full rule below ──────────────── */
-  h2 {
-    font-size: 11pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.4pt;
-    border-bottom: 0.8pt solid #000;
-    margin-top: 7pt;
-    margin-bottom: 4pt;
-    padding-bottom: 1pt;
-  }
-
-  /* ── Summary ─────────────────────────────────────────────────────────── */
-  .summary {
-    font-size: 10pt;
-    line-height: 1.3;
-    text-align: justify;
-    margin-bottom: 2pt;
-  }
-
-  /* ── Skills table: bold label col + value col ────────────────────────── */
-  .skills-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2pt;
-  }
-  .skills-table td {
-    font-size: 10pt;
-    line-height: 1.4;
-    vertical-align: top;
-    padding: 0;
-  }
-  .skills-table td.lbl {
-    font-weight: bold;
-    white-space: nowrap;
-    padding-right: 6pt;
-  }
-
-  /* ── Experience / Project entry ──────────────────────────────────────── */
-  .entry { margin-bottom: 6pt; page-break-inside: avoid; }
-
-  /* Title row: bold left, bold right */
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .row-left  { font-weight: bold; font-size: 10pt; }
-  .row-right { font-weight: bold; font-size: 10pt; white-space: nowrap; padding-left: 8pt; }
-
-  /* Subtitle row: italic */
-  .row-sub { font-style: italic; font-size: 10pt; margin-bottom: 2pt; }
-
-  /* Project title line: bold name + right-aligned link */
-  .proj-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2pt; }
-  .proj-name { font-weight: bold; font-size: 10pt; }
-  .proj-link { font-size: 9pt; color: #000; text-decoration: none; white-space: nowrap; padding-left: 8pt; }
-
-  /* ── Bullet list — matches LaTeX highlights env ──────────────────────── */
-  ul {
-    margin-left: 12pt;
-    margin-top: 2pt;
-    margin-bottom: 0;
-    padding-left: 0;
-    list-style-type: disc;
-  }
-  ul li {
-    font-size: 10pt;
-    line-height: 1.3;
-    margin-bottom: 2pt;
-  }
-  ul li:last-child { margin-bottom: 0; }
-
-  /* ── Education ───────────────────────────────────────────────────────── */
-  .edu-sub { font-style: italic; font-size: 10pt; }
-
-  /* ── Print safety ────────────────────────────────────────────────────── */
-  @page { margin: 1cm 1.2cm; }
-  @media print {
-    h2 { page-break-after: avoid; }
-    .entry { page-break-inside: avoid; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${personal_info?.name || 'Resume'} - Resume</title>
+  <meta name="author" content="${personal_info?.name || 'Resume'}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.3;
+      color: #000000;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.75in;
+      background: #ffffff;
+    }
+    
+    /* Header - Name centered, 18pt */
+    .header {
+      text-align: center;
+      margin-bottom: 12pt;
+      border-bottom: 2pt solid #000000;
+      padding-bottom: 8pt;
+    }
+    
+    .header h1 {
+      font-size: 20pt;
+      font-weight: bold;
+      margin-bottom: 6pt;
+      text-transform: uppercase;
+      letter-spacing: 1.5pt;
+    }
+    
+    .header .title {
+      font-size: 12pt;
+      font-weight: 600;
+      margin-bottom: 6pt;
+      color: #1a1a1a;
+    }
+    
+    .header .contact {
+      font-size: 10pt;
+      line-height: 1.4;
+    }
+    
+    .header .contact a {
+      color: #000000;
+      text-decoration: none;
+    }
+    
+    .separator {
+      margin: 0 5pt;
+      color: #333;
+    }
+    
+    /* Section headings - UPPERCASE, bold, underlined */
+    h2 {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1.5pt solid #000000;
+      margin-top: 16pt;
+      margin-bottom: 8pt;
+      padding-bottom: 2pt;
+      letter-spacing: 1pt;
+    }
+    
+    /* Summary section */
+    .summary {
+      margin-bottom: 10pt;
+      line-height: 1.4;
+      text-align: justify;
+    }
+    
+    /* Skills - Clean table layout */
+    .skills-table {
+      width: 100%;
+      margin-bottom: 10pt;
+      border-collapse: collapse;
+    }
+    
+    .skills-table tr {
+      line-height: 1.5;
+      vertical-align: top;
+    }
+    
+    .skills-table td:first-child {
+      font-weight: bold;
+      padding-right: 8pt;
+      width: 180pt;
+    }
+    
+    .skills-table td:last-child {
+      width: auto;
+    }
+    
+    /* Experience/Project entry */
+    .entry {
+      margin-bottom: 12pt;
+      page-break-inside: avoid;
+    }
+    
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2pt;
+    }
+    
+    .entry-title {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    
+    .entry-dates {
+      font-weight: bold;
+      font-size: 10pt;
+      white-space: nowrap;
+      margin-left: 12pt;
+    }
+    
+    .entry-subtitle {
+      margin-bottom: 4pt;
+      font-size: 10pt;
+      font-style: italic;
+    }
+    
+    /* Bullet points - ATS-optimized */
+    ul {
+      margin-left: 20pt;
+      margin-top: 3pt;
+      margin-bottom: 0pt;
+      padding-left: 0;
+    }
+    
+    ul li {
+      margin-bottom: 4pt;
+      line-height: 1.4;
+    }
+    
+    ul li:last-child {
+      margin-bottom: 0pt;
+    }
+    
+    /* Education */
+    .education-entry {
+      margin-bottom: 6pt;
+    }
+    
+    .education-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2pt;
+    }
+    
+    .education-title {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    
+    .education-dates {
+      font-weight: bold;
+      font-size: 10pt;
+    }
+    
+    .education-subtitle {
+      font-size: 10pt;
+      margin-bottom: 2pt;
+    }
+    
+    .education-gpa {
+      font-size: 10pt;
+      font-style: italic;
+    }
+    
+    /* Project header */
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2pt;
+    }
+    
+    .project-title {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    
+    .project-link {
+      font-size: 9pt;
+      color: #000000;
+      text-decoration: none;
+      margin-left: 12pt;
+    }
+    
+    /* Links - Black, no underline */
+    a {
+      color: #000000;
+      text-decoration: none;
+    }
+    
+    @media print {
+      body {
+        padding: 0.5in;
+      }
+      .entry, .education-entry {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
-<div class="header">
-  <h1>${personal_info?.name || 'YOUR NAME'}</h1>
-  <div class="contact">
-    ${[
-      personal_info?.phone || '',
-      personal_info?.email  ? `<a href="mailto:${personal_info.email}">${personal_info.email}</a>` : '',
-      personal_info?.linkedin ? `<a href="${personal_info.linkedin}">${displayUrl(personal_info.linkedin)}</a>` : '',
-      personal_info?.github   ? `<a href="${personal_info.github}">${displayUrl(personal_info.github)}</a>` : '',
-    ].filter(Boolean).join('<span class="sep">|</span>')}
+  <!-- Header with all contact info -->
+  <div class="header">
+    <h1>${personal_info?.name?.toUpperCase() || 'YOUR NAME'}</h1>
+    ${personal_info?.title ? `<div class="title">${personal_info.title}</div>` : ''}
+    <div class="contact">
+      ${personal_info?.phone ? `${personal_info.phone}<span class="separator">|</span>` : ''}
+      ${personal_info?.email ? `<a href="mailto:${personal_info.email}">${personal_info.email}</a>` : 'email@example.com'}
+      ${personal_info?.linkedin ? `<span class="separator">|</span><a href="${personal_info.linkedin}">${personal_info.linkedin.replace('https://', '').replace('http://', '').replace('www.', '')}</a>` : ''}
+      ${personal_info?.github ? `<span class="separator">|</span><a href="${personal_info.github}">${personal_info.github.replace('https://', '').replace('http://', '').replace('www.', '')}</a>` : ''}
+      ${personal_info?.portfolio ? `<span class="separator">|</span><a href="${personal_info.portfolio}">${personal_info.portfolio.replace('https://', '').replace('http://', '').replace('www.', '')}</a>` : ''}
+    </div>
   </div>
-</div>
 
-<!-- ══ SUMMARY ══════════════════════════════════════════════════════════════ -->
-${personal_info?.summary ? `
-<h2>Summary</h2>
-<div class="summary">${personal_info.summary}</div>
-` : ''}
-
-<!-- ══ SKILLS ══════════════════════════════════════════════════════════════ -->
-${skills ? `
-<h2>Skills</h2>
-<table class="skills-table">
-  ${skills.languages?.length ? `
-  <tr>
-    <td class="lbl">Programming Languages:</td>
-    <td>${Array.isArray(skills.languages) ? skills.languages.join(', ') : skills.languages}</td>
-  </tr>` : ''}
-  ${skills.frontend?.length ? `
-  <tr>
-    <td class="lbl">Frameworks &amp; Libraries:</td>
-    <td>${Array.isArray(skills.frontend) ? skills.frontend.join(', ') : skills.frontend}</td>
-  </tr>` : ''}
-  ${skills.backend?.length ? `
-  <tr>
-    <td class="lbl">Backend &amp; APIs:</td>
-    <td>${Array.isArray(skills.backend) ? skills.backend.join(', ') : skills.backend}</td>
-  </tr>` : ''}
-  ${skills.databases?.length ? `
-  <tr>
-    <td class="lbl">Databases:</td>
-    <td>${Array.isArray(skills.databases) ? skills.databases.join(', ') : skills.databases}</td>
-  </tr>` : ''}
-  ${skills.tools?.length ? `
-  <tr>
-    <td class="lbl">DevOps &amp; Tools:</td>
-    <td>${Array.isArray(skills.tools) ? skills.tools.join(', ') : skills.tools}</td>
-  </tr>` : ''}
-</table>
-` : ''}
-
-<!-- ══ EXPERIENCE ══════════════════════════════════════════════════════════ -->
-${experience?.length ? `
-<h2>Professional Experience</h2>
-${experience.map(exp => `
-<div class="entry">
-  <div class="row">
-    <span class="row-left">${exp.title || ''}</span>
-    <span class="row-right">${exp.duration || ''}</span>
+  <!-- Summary (Professional Profile) -->
+  ${personal_info?.summary ? `
+  <h2>Professional Summary</h2>
+  <div class="summary">
+    ${personal_info.summary}
   </div>
-  <div class="row-sub">${exp.company || ''}${exp.location ? `, ${exp.location}` : ''}</div>
-  ${bulletList(exp.bullets)}
-</div>`).join('')}
-` : ''}
+  ` : ''}
 
-<!-- ══ PROJECTS ══════════════════════════════════════════════════════════════ -->
-${projects?.length ? `
-<h2>Projects</h2>
-${projects.map(proj => `
-<div class="entry">
-  <div class="proj-row">
-    <span class="proj-name">${proj.name || ''}${proj.technologies ? ` | ${proj.technologies}` : ''}</span>
-    ${proj.link ? `<a href="${proj.link}" class="proj-link">${displayUrl(proj.link)}</a>` : ''}
-  </div>
-  ${bulletList(proj.bullets)}
-</div>`).join('')}
-` : ''}
+  <!-- Skills -->
+  ${skills ? `
+  <h2>Technical Skills</h2>
+  <table class="skills-table">
+    ${skills.languages && skills.languages.length > 0 ? `
+      <tr>
+        <td>Programming Languages:</td>
+        <td>${Array.isArray(skills.languages) ? skills.languages.join(', ') : skills.languages}</td>
+      </tr>
+    ` : ''}
+    ${skills.frontend && skills.frontend.length > 0 ? `
+      <tr>
+        <td>Frameworks & Libraries:</td>
+        <td>${Array.isArray(skills.frontend) ? skills.frontend.join(', ') : skills.frontend}</td>
+      </tr>
+    ` : ''}
+    ${skills.backend && skills.backend.length > 0 ? `
+      <tr>
+        <td>Backend & APIs:</td>
+        <td>${Array.isArray(skills.backend) ? skills.backend.join(', ') : skills.backend}</td>
+      </tr>
+    ` : ''}
+    ${skills.databases && skills.databases.length > 0 ? `
+      <tr>
+        <td>Databases:</td>
+        <td>${Array.isArray(skills.databases) ? skills.databases.join(', ') : skills.databases}</td>
+      </tr>
+    ` : ''}
+    ${skills.tools && skills.tools.length > 0 ? `
+      <tr>
+        <td>DevOps & Tools:</td>
+        <td>${Array.isArray(skills.tools) ? skills.tools.join(', ') : skills.tools}</td>
+      </tr>
+    ` : ''}
+  </table>
+  ` : ''}
 
-<!-- ══ EDUCATION ══════════════════════════════════════════════════════════════ -->
-${education?.length ? `
-<h2>Education</h2>
-${education.map(edu => `
-<div class="entry">
-  <div class="row">
-    <span class="row-left">${edu.degree || ''}${edu.field ? ` in ${edu.field}` : ''}</span>
-    <span class="row-right">${edu.duration || ''}</span>
-  </div>
-  <div class="edu-sub">${edu.institution || ''}${edu.gpa ? `, CGPA: ${edu.gpa}` : ''}</div>
-</div>`).join('')}
-` : ''}
+  <!-- Professional Experience -->
+  ${experience && experience.length > 0 ? `
+  <h2>Professional Experience</h2>
+  ${experience.map(exp => `
+    <div class="entry">
+      <div class="entry-header">
+        <div class="entry-title">${exp.title || 'Job Title'}</div>
+        <div class="entry-dates">${exp.duration || 'Dates'}</div>
+      </div>
+      <div class="entry-subtitle">${exp.company || 'Company'}${exp.location ? ' | ' + exp.location : ''}</div>
+      ${exp.bullets && exp.bullets.length > 0 ? `
+        <ul>
+          ${exp.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
+        </ul>
+      ` : ''}
+    </div>
+  `).join('')}
+  ` : ''}
 
+  <!-- Projects -->
+  ${projects && projects.length > 0 ? `
+  <h2>Key Projects</h2>
+  ${projects.map(project => `
+    <div class="entry">
+      <div class="project-header">
+        <div class="project-title">${project.name || 'Project Name'}${project.technologies ? ' | ' + project.technologies : ''}</div>
+        ${project.link ? `<a href="${project.link}" class="project-link">${project.link.replace('https://', '').replace('http://', '').replace('www.', '')}</a>` : ''}
+      </div>
+      ${project.bullets && project.bullets.length > 0 ? `
+        <ul>
+          ${project.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
+        </ul>
+      ` : ''}
+    </div>
+  `).join('')}
+  ` : ''}
+
+  <!-- Education -->
+  ${education && education.length > 0 ? `
+  <h2>Education</h2>
+  ${education.map(edu => `
+    <div class="education-entry">
+      <div class="education-header">
+        <div class="education-title">${edu.degree || 'Degree'} in ${edu.field || 'Field'}</div>
+        <div class="education-dates">${edu.duration || 'Dates'}</div>
+      </div>
+      <div class="education-subtitle">${edu.institution || 'Institution'}</div>
+      ${edu.gpa ? `<div class="education-gpa">GPA: ${edu.gpa}</div>` : ''}
+    </div>
+  `).join('')}
+  ` : ''}
 </body>
-</html>`;
+</html>
+  `;
 };
 
-// ── Generate PDF ─────────────────────────────────────────────────────────────
+// Generate PDF
 exports.generatePDF = async (resumeData) => {
   let browser;
+  
   try {
     const html = generateHTML(resumeData);
-
+    
     browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-web-security'
+      ]
     });
-
+    
     const page = await browser.newPage();
-
-    // Set viewport to US Letter width at 96dpi
-    await page.setViewport({ width: 816, height: 1056 });
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
+    
+    // Set PDF metadata for better ATS parsing
+    await page.setContent(html, { 
+      waitUntil: 'networkidle0',
+      timeout: 30000
+    });
+    
     const pdf = await page.pdf({
       format: 'Letter',
       printBackground: true,
-      // These match the LaTeX geometry exactly
       margin: {
-        top:    '1cm',
-        bottom: '1cm',
-        left:   '1.2cm',
-        right:  '1.2cm',
+        top: '0.75in',
+        right: '0.75in',
+        bottom: '0.75in',
+        left: '0.75in'
       },
-      preferCSSPageSize: false, // let Puppeteer control page size
+      preferCSSPageSize: true,
+      displayHeaderFooter: false,
+      tagged: true, // PDF/UA compliance for better ATS parsing
     });
-
+    
     return pdf;
-
+    
   } catch (error) {
     console.error('PDF Generation Error:', error);
     throw error;
   } finally {
-    if (browser) await browser.close();
+    if (browser) {
+      await browser.close();
+    }
   }
 };

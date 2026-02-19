@@ -125,12 +125,6 @@ export default function Login() {
                 <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">
                   Password
                 </label>
-                <Link
-                  href="/forgot"
-                  className="text-[10px] font-bold text-orange-600 hover:text-orange-700 uppercase tracking-tighter"
-                >
-                  Forgot?
-                </Link>
               </div>
               <input
                 type="password"
