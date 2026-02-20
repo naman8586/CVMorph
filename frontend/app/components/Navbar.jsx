@@ -32,7 +32,7 @@ const Navbar = () => {
         "fixed top-0 w-full z-50 transition-all duration-500",
         isScrolled
           ? "bg-white/70 backdrop-blur-xl border-b border-orange-100/50 py-3 shadow-sm"
-          : "bg-transparent border-b border-transparent py-6"
+          : "bg-transparent border-b border-transparent py-6",
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -82,7 +82,7 @@ const Navbar = () => {
             Sign In
           </Link>
 
-          <Link href="/register">
+          <Link href="/register" className="hidden sm:block">
             <Button
               text="Get Started"
               className="w-36 h-11 bg-slate-900 text-white border-none shadow-xl shadow-slate-200"
@@ -101,9 +101,7 @@ const Navbar = () => {
       <div
         className={cn(
           "absolute top-full left-0 w-full bg-white/95 backdrop-blur-2xl border-b border-slate-100 transition-all duration-500 lg:hidden overflow-hidden shadow-2xl",
-          isMobileMenuOpen
-            ? "max-h-[500px] opacity-100"
-            : "max-h-0 opacity-0"
+          isMobileMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <div className="p-8 space-y-6">
@@ -130,12 +128,6 @@ const Navbar = () => {
               className="w-full py-4 text-center font-bold text-slate-500 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors"
             >
               Log in to Account
-            </Link>
-            <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button
-                text="Claim Free Credits"
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-400 text-white border-none h-14 text-lg"
-              />
             </Link>
           </div>
         </div>

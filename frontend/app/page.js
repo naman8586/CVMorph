@@ -112,7 +112,7 @@ export default function Home() {
       {/* ================= THE MARQUEE ================= */}
       <section className="py-12 bg-white border-y border-slate-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 mb-8 text-center">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Morphed Resumes landed at</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Morphed Resumes can get you into</p>
         </div>
         <div className="flex gap-12 animate-marquee whitespace-nowrap">
           {[ 'Google', 'Airbnb', 'Stripe', 'Meta', 'Linear', 'vercel', 'OpenAI', 'Amazon', 'Netflix' ].map((logo) => (
@@ -144,8 +144,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-3xl font-bold mb-4">Dual AI Inference Engine</h3>
                   <p className="text-slate-500 text-lg leading-relaxed max-w-md">
-                    We use Gemini 2.5 Flash for creative logic and Groq (Llama 3.3) for 
-                    ultra-fast structural analysis.
+                    Using Ai to tailor your resume into a perfect fit to the job description. Our unique dual-AI system cross-references your master resume with the target JD.
                   </p>
                </div>
                <div className="absolute right-[-20px] bottom-[-20px] opacity-[0.03] group-hover:opacity-10 transition-opacity">
@@ -248,11 +247,7 @@ export default function Home() {
                <h2 className="text-4xl md:text-5xl font-bold mb-6">From Master to Specialized.</h2>
                <p className="text-slate-400 text-lg font-light">No more manual editing. No more copy-pasting into ChatGPT.</p>
             </div>
-            <div className="flex gap-4">
-               <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center text-slate-500 font-bold">01</div>
-               <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center text-slate-500 font-bold">02</div>
-               <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 font-bold">03</div>
-            </div>
+            
           </div>
 
           <div className="grid md:grid-cols-3 gap-12">
@@ -276,24 +271,6 @@ export default function Home() {
       {/* ================= SUCCESS STORIES ================= */}
       <section id="success" className="py-32 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
-           <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 pt-12">
-                 <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 shadow-sm">
-                    <p className="text-3xl font-bold mb-1">95%</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">More Callbacks</p>
-                 </div>
-                 <div className="bg-orange-50 p-8 rounded-[32px] border border-orange-100 shadow-sm">
-                    <p className="text-3xl font-bold mb-1">100k+</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Users globally</p>
-                 </div>
-              </div>
-              <div className="space-y-4">
-                 <div className="bg-blue-50 p-8 rounded-[32px] border border-blue-100 text-center py-20 flex flex-col items-center shadow-sm">
-                    <Star className="text-blue-500 mb-4" fill="currentColor" size={32}/>
-                    <p className="font-bold text-slate-900 leading-tight">Top Rated AI Resume Tool 2024</p>
-                 </div>
-              </div>
-           </div>
            
            <div className="space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold leading-tight">The difference between a rejection and an interview.</h2>
@@ -301,13 +278,6 @@ export default function Home() {
                 &ldquo;The ROI on this tool is incredible. I spent months manually editing resumes. With CVMorph, I applied to 10 jobs in 10 minutes, all perfectly tailored. Landed an offer at a Series B startup 2 weeks later.&rdquo;
               </p>
               <div className="flex items-center gap-4 pt-4">
-                 <div className="w-14 h-14 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden">
-                    <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100" width={100} height={100} alt="User" className="w-full h-full object-cover" />
-                 </div>
-                 <div>
-                    <p className="font-bold text-slate-900">Alex Rivera</p>
-                    <p className="text-sm text-slate-400 font-semibold tracking-wide">Full Stack Engineer</p>
-                 </div>
               </div>
            </div>
         </div>
